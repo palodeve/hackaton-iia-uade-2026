@@ -60,48 +60,49 @@ def alerta(humedad, viento, dias_sin_lluvia):
 
 | | Predice SÍ | Predice NO |
 |---|---|---|
-| **Real SÍ** | VP = <> | FN = <> |
-| **Real NO** | FP = <> | VN = <> |
+| **Real SÍ** | VP = <6> | FN = <0> |
+| **Real NO** | FP = <0> | VN = <8> |
 
 **Prueba (casos 15–20)**
 
 | | Predice SÍ | Predice NO |
 |---|---|---|
-| **Real SÍ** | VP = <> | FN = <> |
-| **Real NO** | FP = <> | VN = <> |
+| **Real SÍ** | VP = <3> | FN = <0> |
+| **Real NO** | FP = <1> | VN = <2> |
 
 | Métrica | Entrenamiento | Prueba |
 |---|---|---|
-| Exactitud | <> | <> |
-| Precisión | <> | <> |
-| Sensibilidad | <> | <> |
-| Especificidad | <> | <> |
+| Exactitud | <100%> | <83,3%> |
+| Precisión | <100%> | <75%> |
+| Sensibilidad | <100%> | <100%> |
+| Especificidad | <100%> | <66,7%> |
+
+El único error está en la prueba: el caso 16 (humedad 24 %, viento 24 km/h, 21 días sin lluvia) es un falso positivo, porque cumple R2 y no hubo incendio.
 
 **Entrenamiento contra prueba.** <¿Hay diferencia? ¿Por qué? ¿Sobreajuste o generalización?>
+Entrenamiento contra prueba. Hay diferencia: 100 % contra 83,3 % de exactitud. El sistema se armó mirando los casos 1 a 14, así que ahí acierta todo; en casos nuevos aparece un error. Es una señal de sobreajuste moderado: con solo 14 casos de entrenamiento (6 con incendio) los umbrales quedan muy pegados a esos datos. Además, la prueba tiene solo 6 casos, así que un solo error mueve la exactitud 16,7 puntos y no se puede concluir mucho. Importante: la regla R1 se agregó después de ver que el sistema sin ella fallaba en el caso 18 (ver sección 4), por lo que la prueba ya no es completamente independiente. Sin R1, el resultado en prueba era VP = 2, FN = 1, FP = 1, VN = 2 (exactitud, precisión, sensibilidad y especificidad de 66,7 %).
 
 ## 4. El error más caro
 
 <¿Es peor el falso positivo o el falso negativo en su problema? ¿Por qué, según la ficha? ¿Qué cambiaron en el sistema para cometer menos ese error?>
+Según la ficha, el error más caro es el falso negativo: no alertar y que haya incendio significa hectáreas quemadas, fauna perdida y riesgo para viviendas. El falso positivo cuesta brigadas movilizadas de más y actividades suspendidas, un costo real pero recuperable.
+
+Qué cambiamos por él: la primera versión del sistema (solo R2 y R3) tenía un falso negativo en la prueba, el caso 18 (humedad 57 %, viento 47 km/h, 26 días sin lluvia: viento fuerte con humedad moderada). Revisando el entrenamiento vimos que todos los días con viento ≥ 43 km/h habían sido incendio (casos 7, 10, 12 y 14), así que agregamos R1. Con eso la sensibilidad en prueba subió de 66,7 % a 100 %. El costo fue aceptar que R1 se agregó después de mirar la prueba, y lo declaramos arriba.
 
 ## 5. ¿Comparado contra qué?
 
-**Línea base trivial.** <Un sistema que responde siempre NO saca 57,1 % de exactitud en entrenamiento (8 de 14) y 50 % en prueba (3 de 6), con sensibilidad de 0 %: nunca alerta y no detecta ningún incendio. Nuestro sistema saca 100 % y 83,3 % de exactitud, y detecta todos los incendios (sensibilidad 100 % en ambos conjuntos). Siempre responder SÍ tendría sensibilidad de 100 % pero especificidad de 0 %, alertando todos los días; el nuestro mantiene especificidad de 66,7 % en prueba.>
+**Línea base trivial.** <Qué resultado saca un sistema que responde siempre lo mismo, y cómo se compara el suyo.>
 
 | Checklist (Clase 6) | Respuesta |
 |---|---|
-| ¿Qué datos? | <Los 20 casos inventados de la ficha M21 (14 de entrenamiento y 6 de prueba), sin cambiar la división.> |
-| ¿Qué métrica? | <Sensibilidad como principal, con exactitud, precisión y especificidad como control.> |
-| ¿Comparado contra qué? | <Contra la línea base de responder siempre NO (57,1 % y 50 % de exactitud).> |
-| ¿Quién lo midió? | <Nosotras, con los datos de la ficha; no hay una medición independiente. En la mesa, el profesor evalúa con casos propios. > |
+| ¿Qué datos? | <> |
+| ¿Qué métrica? | <> |
+| ¿Comparado contra qué? | <> |
+| ¿Quién lo midió? | <> |
 
 ## 6. Riesgo: el camino completo
 
-<Datos → modelo → decisión → consecuencia aplicado a su caso. Al menos un riesgo concreto.
-- *Datos:* solo 20 casos inventados y 6 incendios en entrenamiento; faltan variables que importan en la realidad (temperatura, tipo de vegetación, pendiente, causa de ignición).
-- *Modelo:* los umbrales (43 km/h, 30 % de humedad, 39 días) están ajustados a muy pocos casos y no se validaron con más datos. Un día real con valores cerca de un umbral puede quedar del lado equivocado.
-- *Decisión:* el sistema dice NO cuando ninguna regla se cumple. Un día con humedad moderada, viento de 40 km/h y 30 días sin lluvia da NO, aunque combine factores de riesgo.
-- *Consecuencia:* un falso negativo de ese tipo significa no alertar y que el incendio avance sobre hectáreas, fauna y viviendas. En sentido contrario, muchas falsas alarmas pueden hacer que se ignoren las alertas futuras.
->
+<Datos → modelo → decisión → consecuencia aplicado a su caso. Al menos un riesgo concreto.>
 
 ## 7. Bitácora
 
