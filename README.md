@@ -85,18 +85,23 @@ def alerta(humedad, viento, dias_sin_lluvia):
 
 ## 5. ¿Comparado contra qué?
 
-**Línea base trivial.** <Qué resultado saca un sistema que responde siempre lo mismo, y cómo se compara el suyo.>
+**Línea base trivial.** <Un sistema que responde siempre NO saca 57,1 % de exactitud en entrenamiento (8 de 14) y 50 % en prueba (3 de 6), con sensibilidad de 0 %: nunca alerta y no detecta ningún incendio. Nuestro sistema saca 100 % y 83,3 % de exactitud, y detecta todos los incendios (sensibilidad 100 % en ambos conjuntos). Siempre responder SÍ tendría sensibilidad de 100 % pero especificidad de 0 %, alertando todos los días; el nuestro mantiene especificidad de 66,7 % en prueba.>
 
 | Checklist (Clase 6) | Respuesta |
 |---|---|
-| ¿Qué datos? | <> |
-| ¿Qué métrica? | <> |
-| ¿Comparado contra qué? | <> |
-| ¿Quién lo midió? | <> |
+| ¿Qué datos? | <Los 20 casos inventados de la ficha M21 (14 de entrenamiento y 6 de prueba), sin cambiar la división.> |
+| ¿Qué métrica? | <Sensibilidad como principal, con exactitud, precisión y especificidad como control.> |
+| ¿Comparado contra qué? | <Contra la línea base de responder siempre NO (57,1 % y 50 % de exactitud).> |
+| ¿Quién lo midió? | <Nosotras, con los datos de la ficha; no hay una medición independiente. En la mesa, el profesor evalúa con casos propios. > |
 
 ## 6. Riesgo: el camino completo
 
-<Datos → modelo → decisión → consecuencia aplicado a su caso. Al menos un riesgo concreto.>
+<Datos → modelo → decisión → consecuencia aplicado a su caso. Al menos un riesgo concreto.
+- *Datos:* solo 20 casos inventados y 6 incendios en entrenamiento; faltan variables que importan en la realidad (temperatura, tipo de vegetación, pendiente, causa de ignición).
+- *Modelo:* los umbrales (43 km/h, 30 % de humedad, 39 días) están ajustados a muy pocos casos y no se validaron con más datos. Un día real con valores cerca de un umbral puede quedar del lado equivocado.
+- *Decisión:* el sistema dice NO cuando ninguna regla se cumple. Un día con humedad moderada, viento de 40 km/h y 30 días sin lluvia da NO, aunque combine factores de riesgo.
+- *Consecuencia:* un falso negativo de ese tipo significa no alertar y que el incendio avance sobre hectáreas, fauna y viviendas. En sentido contrario, muchas falsas alarmas pueden hacer que se ignoren las alertas futuras.
+>
 
 ## 7. Bitácora
 
