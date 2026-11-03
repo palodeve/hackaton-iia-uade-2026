@@ -123,3 +123,5 @@ Qué cambiamos por él: la primera versión del sistema (solo R2 y R3) tenía un
 | Corrida | Nota | Agujero que encontró | Qué cambiamos |
 |---|---|---|---|
 | 1 | <9,5> | <¿Con qué datos de entrenamiento justifican que la zona de aire seco use 19 km/h de viento como umbral? Mirá qué pasa con el caso 16.> | <dos, agregamos la corrida del readme y agregamos la expliccion del aguero q se encontro.> |
+
+| 2 | <10> | <¿Con qué datos de entrenamiento justifican que la zona de aire seco use 19 km/h de viento como umbral? Mirá qué pasa con el caso 16.> | <ninguna.> |
